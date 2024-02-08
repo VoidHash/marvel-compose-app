@@ -1,6 +1,8 @@
 package com.andrepassos.marvelheroes.network.api
 
+import androidx.compose.runtime.mutableStateOf
 import com.andrepassos.marvelheroes.model.CharacterApiResponse
+import com.andrepassos.marvelheroes.model.CharacterResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Call
 import retrofit2.Callback
@@ -10,6 +12,8 @@ class MarvelApiRepository(private val api: MarvelApi) {
 
     val characters =
         MutableStateFlow<NetworkResult<CharacterApiResponse>>(NetworkResult.Initial())
+
+    val characterDetails = mutableStateOf<CharacterResult?>(null)
 
     fun query(query: String) {
         characters.value = NetworkResult.Loading()
@@ -35,5 +39,13 @@ class MarvelApiRepository(private val api: MarvelApi) {
                     t.printStackTrace()
                 }
             })
+    }
+
+    fun getSingleCharacter(id: Int?) {
+        id?.let {
+            characterDetails.value = characters.value.data?.characterData?.results?.firstOrNull {
+                characterResult -> characterResult?.id == id
+            }
+        }
     }
 }

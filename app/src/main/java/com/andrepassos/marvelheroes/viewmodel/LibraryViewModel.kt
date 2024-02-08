@@ -26,12 +26,14 @@ class LibraryViewModel @Inject constructor(
 
     private val queryInput = Channel<String>(Channel.CONFLATED)
 
+    val characterDetails = repository.characterDetails
+
     init {
-        retrieveCharacters()
+        getAllCharacter()
     }
 
     @OptIn(FlowPreview::class)
-    private fun retrieveCharacters() {
+    private fun getAllCharacter() {
         viewModelScope.launch(Dispatchers.IO) {
             queryInput.receiveAsFlow()
                 .filter { validateQuery(it) }
@@ -47,6 +49,10 @@ class LibraryViewModel @Inject constructor(
     fun onQueryUpdate(input: String) {
         queryText.value = input
         queryInput.trySend(input)
+    }
+
+    fun getSingleCharacter(id: Int) {
+        repository.getSingleCharacter(id)
     }
 
 

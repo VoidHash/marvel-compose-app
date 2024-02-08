@@ -1,6 +1,7 @@
 package com.andrepassos.marvelheroes
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,12 +28,13 @@ import com.andrepassos.marvelheroes.view.CharacterBottomNav
 import com.andrepassos.marvelheroes.view.CharacterDetailScreen
 import com.andrepassos.marvelheroes.view.CollectionScreen
 import com.andrepassos.marvelheroes.view.LibraryScreen
+import com.andrepassos.marvelheroes.viewmodel.CollectionViewModel
 import com.andrepassos.marvelheroes.viewmodel.LibraryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 sealed class Destination(val route: String) {
-    object Library: Destination("library")
-    object Collection: Destination("collection")
+    data object Library: Destination("library")
+    data object Collection: Destination("collection")
     data object CharacterDetail: Destination("character/{characterId}") {
         fun createRoute(characterId: Int?) = "character/$characterId"
     }
@@ -41,6 +44,7 @@ sealed class Destination(val route: String) {
 class MainActivity : ComponentActivity() {
 
     private val libraryViewModel by viewModels<LibraryViewModel>()
+    private val collectionViewModel by viewModels<CollectionViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    CharactersScaffold(navController = navController, viewModel = libraryViewModel)
+                    CharactersScaffold(
+                        navController = navController,
+                        libraryViewModel = libraryViewModel,
+                        collectionViewModel = collectionViewModel)
                 }
             }
         }
@@ -60,8 +67,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewModel) {
+private fun CharactersScaffold(
+    navController: NavHostController,
+    libraryViewModel: LibraryViewModel,
+    collectionViewModel: CollectionViewModel) {
+
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -70,13 +82,24 @@ private fun CharactersScaffold(navController: NavHostController, viewModel: Libr
         paddingValues.apply {  }
         NavHost(navController = navController, startDestination = Destination.Library.route) {
             composable(Destination.Library.route) {
-                LibraryScreen(navController, viewModel = viewModel, paddingValues = paddingValues)
+                LibraryScreen(navController, viewModel = libraryViewModel, paddingValues = paddingValues)
             }
             composable(Destination.Collection.route) {
                 CollectionScreen()
             }
             composable(Destination.CharacterDetail.route) {navBackStackEntry ->
-                //CharacterDetailScreen()
+                val id = navBackStackEntry.arguments?.getString("characterId")?.toIntOrNull()
+                if(id == null) {
+                    Toast.makeText(context, "Character id is required", Toast.LENGTH_LONG).show()
+                } else {
+                    libraryViewModel.getSingleCharacter(id)
+                    CharacterDetailScreen(
+                        libraryViewModel = libraryViewModel,
+                        collectionViewModel = collectionViewModel,
+                        paddingValues = paddingValues,
+                        navHostController = navController
+                    )
+                }
             }
         }
     }

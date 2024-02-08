@@ -23,8 +23,8 @@ class HiltModule {
     fun provideApiRepository() = MarvelApiRepository(MarvelService.api)
 
     @Provides
-    fun provideMarvelDatabase(@ApplicationContext context: Context) {
-        Room.databaseBuilder(context, MarvelDatabase::class.java, "marvel_database")
+    fun provideMarvelDatabase(@ApplicationContext context: Context): MarvelDatabase {
+        return Room.databaseBuilder(context, MarvelDatabase::class.java, "marvel_database")
             .build()
     }
 
