@@ -10,6 +10,7 @@ import com.andrepassos.marvelheroes.db.MarvelDatabase
 import com.andrepassos.marvelheroes.db.NoteDao
 import com.andrepassos.marvelheroes.network.api.MarvelApiRepository
 import com.andrepassos.marvelheroes.network.api.MarvelService
+import com.andrepassos.marvelheroes.network.connectivity.ConnectivityMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +43,10 @@ class HiltModule {
     @Provides
     fun provideMarvelDataSource(characterDao: CharacterDao, noteDao: NoteDao): IMarvelDataSource {
         return MarvelDataSource(characterDao, noteDao)
+    }
+
+    @Provides
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityMonitor {
+        return ConnectivityMonitor.getInstance(context)
     }
 }

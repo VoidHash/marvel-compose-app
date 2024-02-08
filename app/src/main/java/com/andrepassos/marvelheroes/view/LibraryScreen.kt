@@ -3,6 +3,7 @@ package com.andrepassos.marvelheroes.view
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -35,6 +36,8 @@ import androidx.navigation.NavHostController
 import com.andrepassos.marvelheroes.Destination
 import com.andrepassos.marvelheroes.model.CharacterApiResponse
 import com.andrepassos.marvelheroes.network.api.NetworkResult
+import com.andrepassos.marvelheroes.network.connectivity.ConnectivityMonitor
+import com.andrepassos.marvelheroes.network.connectivity.ConnectivityObservable
 import com.andrepassos.marvelheroes.util.UiUtil.AttributionText
 import com.andrepassos.marvelheroes.util.UiUtil.CharacterImage
 import com.andrepassos.marvelheroes.viewmodel.LibraryViewModel
@@ -47,13 +50,29 @@ fun LibraryScreen(
 ) {
     val result by viewModel.result.collectAsState()
     val text = viewModel.queryText.collectAsState()
-
+    val networkAvailable = viewModel.networkAvailable.observe()
+        .collectAsState(ConnectivityObservable.Status.AVALIABLE)
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(bottom = paddingValues.calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        if(networkAvailable.value == ConnectivityObservable.Status.UNAVALIABLE){
+            Row(horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Red)
+            ) {
+                Text(
+                    text = "Network unavailable",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.padding(4.dp)
+                )
+            }
+        }
 
         OutlinedTextField(
             value = text.value, 
