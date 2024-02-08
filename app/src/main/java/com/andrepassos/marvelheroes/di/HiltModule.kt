@@ -7,6 +7,7 @@ import com.andrepassos.marvelheroes.db.CharacterEntity
 import com.andrepassos.marvelheroes.db.IMarvelDataSource
 import com.andrepassos.marvelheroes.db.MarvelDataSource
 import com.andrepassos.marvelheroes.db.MarvelDatabase
+import com.andrepassos.marvelheroes.db.NoteDao
 import com.andrepassos.marvelheroes.network.api.MarvelApiRepository
 import com.andrepassos.marvelheroes.network.api.MarvelService
 import dagger.Module
@@ -34,7 +35,12 @@ class HiltModule {
     }
 
     @Provides
-    fun provideMarvelDataSource(characterDao: CharacterDao): IMarvelDataSource {
-        return MarvelDataSource(characterDao)
+    fun provideNoteDao(marvelDatabase: MarvelDatabase): NoteDao {
+        return marvelDatabase.noteDao()
+    }
+
+    @Provides
+    fun provideMarvelDataSource(characterDao: CharacterDao, noteDao: NoteDao): IMarvelDataSource {
+        return MarvelDataSource(characterDao, noteDao)
     }
 }

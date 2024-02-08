@@ -13,4 +13,17 @@ interface IMarvelDataSource {
     suspend fun updateCharacter(characterEntity: CharacterEntity)
 
     suspend fun deleteCharacter(characterEntity: CharacterEntity)
+
+
+    suspend fun getAllNotes(): Flow<List<NoteEntity>>
+
+    suspend fun getNote(characterId: Int): Flow<NoteEntity>
+
+    suspend fun insertNote(noteEntity: NoteEntity)
+
+    suspend fun updateNote(noteEntity: NoteEntity)
+
+    suspend fun deleteNote(noteEntity: NoteEntity)
+
+    suspend fun deleteAllNotes(characterId: CharacterEntity)
 }
