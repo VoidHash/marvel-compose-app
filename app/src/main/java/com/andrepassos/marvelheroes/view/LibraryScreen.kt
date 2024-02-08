@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -154,6 +155,7 @@ fun ShowCharactersList(
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .width(100.dp)
+                                    .height(100.dp)
                             )
                             Column(modifier = Modifier.padding(4.dp)) {
                                 Text(text = title ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
