@@ -1,6 +1,6 @@
 # Marvel Compose App
 
-Marvel compose app, a.k.a Marvel Heroes, is a [Android Compose](https://developer.android.com/jetpack/compose) app, it's consume the official [Marvel API](https://developer.marvel.com/) (get your own API Key) to allow you search for any character from Marvel universe, you can search for then, get details about comics and background, save it to your collection and add notes about youy favorite heroes and villans!
+Marvel compose app, a.k.a Marvel Heroes, is a [Android Compose](https://developer.android.com/jetpack/compose) app, it's consume the official [Marvel API](https://developer.marvel.com/) (get your own API Key) to allow you search for any character from Marvel universe, you can search for then, get details about comics and background, save it to your collection and add notes about your favorite heroes and villans!
 
 ## Key Development Features
 
